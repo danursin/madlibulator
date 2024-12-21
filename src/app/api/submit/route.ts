@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
-    const prompt = `
+    const system = `
     <instructions>
         Rewrite the input text by creatively replacing various parts of speech from this list of words: [${replacementWords}]. The result should be humorous, lighthearted, and coherent. 
         The result should be a creative and humorous rewrite of the original text but retain the original structure and remain coherent and grammatically correct.
@@ -43,10 +43,11 @@ export async function POST(req: NextRequest) {
         anthropic_version: "bedrock-2023-05-31",
         max_tokens: 1000,
         temperature: 0.9,
+        system,
         messages: [
             {
                 role: "user",
-                content: [{ type: "text", text: prompt }],
+                content: [{ type: "text", text }],
             },
         ]
       };
