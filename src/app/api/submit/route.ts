@@ -10,7 +10,6 @@ export type SubmitRequestBody = {
 
 export type SubmitResponseBody = {
     modifiedText: string;
-    ssml: string;
 };
 
 const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0";
@@ -32,8 +31,7 @@ export async function POST(req: NextRequest) {
 
         <desired_output_format>
             {
-                "modifiedText": "The modified text goes here to be shown to the end user.",
-                "ssml": "The SSML for the modified text goes here to be passed to Web Speech API."
+                "modifiedText": "The modified text goes here to be shown to the end user."
             }
         </desired_output_format>
     </instructions>

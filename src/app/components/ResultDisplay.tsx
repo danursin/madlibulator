@@ -12,7 +12,7 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
         <Segment>
             <Header as="h3">
                 Your Generated Text:
-                <Icon name="sound" link onClick={() => window.speechSynthesis.speak(new SpeechSynthesisUtterance(result.ssml))} />
+                <Icon name="sound" link onClick={() => window.speechSynthesis.speak(new SpeechSynthesisUtterance(result.modifiedText))} />
             </Header>
             <p>{result.modifiedText}</p>
         </Segment>
