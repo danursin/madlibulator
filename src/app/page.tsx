@@ -1,18 +1,17 @@
 "use client";
 
-import { Button, Container, Header } from "semantic-ui-react";
-import PartsOfSpeechSelect, { PartOfSpeech } from "./components/PartsOfSpeechSelect";
+import { Button, Container, Header, Input } from "semantic-ui-react";
 import React, { useState } from "react";
 
+import ReplacementWordSelect from "./components/ReplacementWordSelect";
 import ResultDisplay from "./components/ResultDisplay";
 import { SubmitRequestBody } from "./api/submit/route";
 import TextSelect from "./components/TextSelect";
-import ThemeSelect from "./components/ThemeSelect";
 
 export default function HomePage() {
     const [selectedText, setSelectedText] = useState<string | null>(null);
-    const [selectedTheme, setSelectedTheme] = useState<string | string[] | null>("poopify");
-    const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] = useState<PartOfSpeech[]>(["Adjectives", "Verbs"]);
+    const [replacementWords, setReplacementWords] = useState<string>("");
+    const [temperature, setTemperature] = useState<number>(0.9);
     const [result, setResult] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -25,8 +24,8 @@ export default function HomePage() {
             },
             body: JSON.stringify({
                 text: selectedText,
-                theme: selectedTheme,
-                parts: selectedPartsOfSpeech
+                replacementWords,
+                temperature
             } as SubmitRequestBody)
         });
 
@@ -45,15 +44,25 @@ export default function HomePage() {
             <TextSelect onSelectText={(text) => setSelectedText(text)} />
 
             {/* Step 2: Select Theme or Custom Words */}
-            {selectedText && <ThemeSelect onSelectTheme={(theme) => setSelectedTheme(theme)} selectedTheme={selectedTheme} />}
+            {selectedText && (
+                <ReplacementWordSelect onSelectWords={(theme) => setReplacementWords(theme)} selectedWords={replacementWords} />
+            )}
 
             {/* Step 3: Select Parts of Speech */}
-            {selectedText && selectedTheme && (
-                <PartsOfSpeechSelect onSelectParts={(parts) => setSelectedPartsOfSpeech(parts)} selectedParts={selectedPartsOfSpeech} />
+            {selectedText && replacementWords && (
+                <Input
+                    type="range"
+                    label="Temperature"
+                    min={0}
+                    max={1}
+                    step={0.1}
+                    value={temperature}
+                    onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                />
             )}
 
             {/* Generate Button */}
-            {selectedText && selectedTheme && selectedPartsOfSpeech.length > 0 && (
+            {selectedText && replacementWords && (
                 <Button primary fluid onClick={handleGenerate} style={{ marginTop: "1em" }} loading={loading}>
                     Generate
                 </Button>
