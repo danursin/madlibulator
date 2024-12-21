@@ -1,4 +1,4 @@
-import { Dropdown, Segment } from "semantic-ui-react";
+import { Form, Segment } from "semantic-ui-react";
 
 import React from "react";
 
@@ -8,7 +8,7 @@ interface ThemeSelectProps {
 }
 
 const themeOptions = [
-    { key: "poop", text: "Poopify", value: "poop" },
+    { key: "poopify", text: "Poopify", value: "poopify" },
     { key: "pirate", text: "Pirate Speak", value: "pirate" },
     { key: "custom", text: "Custom Words", value: "custom" }
 ];
@@ -26,14 +26,17 @@ const ThemeSelect: React.FC<ThemeSelectProps> = ({ onSelectTheme, selectedTheme 
 
     return (
         <Segment>
-            <Dropdown
-                placeholder="Select a Theme"
-                fluid
-                selection
-                options={themeOptions}
-                value={selectedTheme || ""}
-                onChange={handleChange}
-            />
+            <Form>
+                <Form.Dropdown
+                    placeholder="Select a Theme"
+                    fluid
+                    selection
+                    label="Theme selector"
+                    options={themeOptions}
+                    value={selectedTheme || ""}
+                    onChange={handleChange}
+                />
+            </Form>
         </Segment>
     );
 };

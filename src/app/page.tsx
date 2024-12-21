@@ -1,23 +1,38 @@
 "use client";
 
 import { Button, Container, Header } from "semantic-ui-react";
+import PartsOfSpeechSelect, { PartOfSpeech } from "./components/PartsOfSpeechSelect";
 import React, { useState } from "react";
 
-import PartsOfSpeechSelect from "./components/PartsOfSpeechSelect";
 import ResultDisplay from "./components/ResultDisplay";
+import { SubmitRequestBody } from "./api/submit/route";
 import TextSelect from "./components/TextSelect";
 import ThemeSelect from "./components/ThemeSelect";
 
 export default function HomePage() {
     const [selectedText, setSelectedText] = useState<string | null>(null);
-    const [selectedTheme, setSelectedTheme] = useState<string | string[] | null>(null);
-    const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] = useState<string[]>([]);
+    const [selectedTheme, setSelectedTheme] = useState<string | string[] | null>("poopify");
+    const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] = useState<PartOfSpeech[]>(["Adjectives", "Verbs"]);
     const [result, setResult] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const handleGenerate = () => {
-        // Placeholder logic for result generation
-        const generatedResult = `Text: ${selectedText}, Theme: ${selectedTheme}, Parts of Speech: ${selectedPartsOfSpeech.join(", ")}`;
-        setResult(generatedResult);
+    const handleGenerate = async () => {
+        setLoading(true);
+        const response = await fetch("/api/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: selectedText,
+                theme: selectedTheme,
+                parts: selectedPartsOfSpeech
+            } as SubmitRequestBody)
+        });
+
+        const data = await response.json();
+        setLoading(false);
+        setResult(data.modifiedText);
     };
 
     return (
@@ -39,7 +54,7 @@ export default function HomePage() {
 
             {/* Generate Button */}
             {selectedText && selectedTheme && selectedPartsOfSpeech.length > 0 && (
-                <Button primary fluid onClick={handleGenerate} style={{ marginTop: "1em" }}>
+                <Button primary fluid onClick={handleGenerate} style={{ marginTop: "1em" }} loading={loading}>
                     Generate
                 </Button>
             )}

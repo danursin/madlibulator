@@ -1,29 +1,37 @@
-import { Button, Segment } from "semantic-ui-react";
+import { Form, Segment } from "semantic-ui-react";
+import React, { useState } from "react";
 
-import React from "react";
+import PresetTextModal from "./PresetTextModal";
 
 interface TextSelectProps {
     onSelectText: (text: string) => void;
 }
 
 const TextSelect: React.FC<TextSelectProps> = ({ onSelectText }) => {
-    const handlePresetSelect = () => {
-        onSelectText("This is a preset text snippet.");
+    const [text, setText] = useState<string>("");
+
+    const handlePresetSelect = (selectedText: string) => {
+        setText(selectedText);
+        onSelectText(selectedText);
     };
 
-    const handleCustomText = () => {
-        const customText = prompt("Enter your own text:");
-        if (customText) onSelectText(customText);
+    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newText = e.target.value;
+        setText(newText);
+        onSelectText(newText);
     };
 
     return (
         <Segment>
-            <Button fluid onClick={handlePresetSelect}>
-                Select Preset Text
-            </Button>
-            <Button fluid onClick={handleCustomText} style={{ marginTop: "1em" }}>
-                Enter Custom Text
-            </Button>
+            <PresetTextModal onPresetSelect={handlePresetSelect} />
+            <Form>
+                <Form.TextArea
+                    placeholder="Enter custom text here..."
+                    value={text}
+                    onChange={handleTextChange}
+                    style={{ marginTop: "1em", width: "100%" }}
+                />
+            </Form>
         </Segment>
     );
 };
